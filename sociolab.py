@@ -18,6 +18,7 @@ except KeyError:
 @st.cache_resource
 def get_available_models():
     try:
+        # Взимаме абсолютно всички налични модели от сървърите на Google
         return [m.name.replace('models/', '') for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
     except Exception:
         return ["gemini-1.5-flash", "gemini-1.5-pro"] 
@@ -97,6 +98,14 @@ with tab0:
     3. **Рефлексивност:** Изследователят трябва непрекъснато да обективира собствената си позиция, академичен хабитус и социални предразсъдъци спрямо обекта на изследване.
     """)
 
+# ФУНКЦИЯ ЗА ОБРАБОТКА НА ГРЕШКИ
+def handle_google_errors(e, model_name):
+    error_msg = str(e)
+    if "404" in error_msg or "no longer available" in error_msg:
+        st.error(f"❌ **Отказан достъп от Google:** Версията '{model_name}' е спряна от поддръжка или заключена от сървърите на Google. Моля, изберете друга версия от падащото меню вляво (напр. gemini-1.5-pro или gemini-1.5-flash).")
+    else:
+        st.error(f"⚠️ Възникна проблем при комуникацията със сървъра за модел {model_name}. Опитайте отново или сменете модела.\n\n*(Технически детайл: {e})*")
+
 # --- МОДУЛ 1: РЕФЛЕКСИВНА СОЦИОЛОГИЯ ---
 with tab1:
     st.header("Модул 1: Рефлексивна социология (Епистемологичен скъс)")
@@ -137,7 +146,7 @@ with tab1:
                     )
                     st.markdown(response_1.text)
                 except Exception as e:
-                    st.error(f"⚠️ Избраният модел ({selected_model}) не успя да обработи заявката. Възможно е да е експериментален или да не поддържа системни инструкции. Моля, избери 'gemini-1.5-pro' или 'gemini-1.5-flash' от менюто вляво.\n\n*(Технически детайли: {e})*")
+                    handle_google_errors(e, selected_model)
 
 # --- МОДУЛ 2: РЕЛАЦИОННА СОЦИОЛОГИЯ ---
 with tab2:
@@ -175,7 +184,7 @@ with tab2:
                     )
                     st.markdown(response_module_2.text)
                 except Exception as e:
-                    st.error(f"⚠️ Избраният модел ({selected_model}) не успя да обработи заявката. Моля, избери 'gemini-1.5-pro' или 'gemini-1.5-flash'.\n\n*(Технически детайли: {e})*")
+                    handle_google_errors(e, selected_model)
 
 # --- МОДУЛ 3 ---
 with tab3:
