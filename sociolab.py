@@ -131,7 +131,11 @@ with tab1:
 # --- МОДУЛ 2: РЕЛАЦИОННА СОЦИОЛОГИЯ ---
 with tab2:
     st.header("Модул 2: Релационна социология")
-    user_topic_2 = st.text_area("Въведи темата за релационно конструиране:", key="topic_mod2")
+    
+    # Автоматично извличане на темата от Модул 1 (ако има такава)
+    default_topic_2 = st.session_state.get("topic_mod1", "")
+    
+    user_topic_2 = st.text_area("Въведи темата за релационно конструиране:", value=default_topic_2, key="topic_mod2")
     
     if st.button("Тествай Модул 2"):
         if user_topic_2:
