@@ -7,7 +7,7 @@ st.set_page_config(page_title="SocioLab: Цифров учебник по ЕСИ
 st.title("SocioLab: Цифров учебник и методологичен тренажор")
 st.subheader("Елементи на социологическото изследване (в традицията на Пиер Бурдийо)")
 
-# 2. СВЪРЗВАНЕ С ИЗКУСТВЕНИЯ ИНТЕЛЕКТ (Защитен достъп през Streamlit Secrets)
+# 2. СВЪРЗВАНЕ С ИЗКУСТВЕНИЯ ИНТЕЛЕКТ
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=api_key)
@@ -20,7 +20,7 @@ def get_available_models():
     try:
         return [m.name.replace('models/', '') for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
     except Exception:
-        return ["gemini-1.5-flash"] 
+        return ["gemini-1.5-flash", "gemini-1.5-pro"] 
 
 available_models = get_available_models()
 
@@ -96,14 +96,6 @@ with tab0:
     2. **Релационно мислене:** Светът на социалното не се състои от изолирани индивиди или готови статистически единици, а от мрежи от обективни отношения (пространства на позиции).
     3. **Рефлексивност:** Изследователят трябва непрекъснато да обективира собствената си позиция, академичен хабитус и социални предразсъдъци спрямо обекта на изследване.
     """)
-    
-    st.markdown("---")
-    st.markdown("### 🛠️ Как да използвате инструмента?")
-    st.markdown("""
-    * Използвайте **Речника на понятията** в лявото меню за бърза справка с точните дефиниции.
-    * Можете да качите учебни текстове или лекции в секцията **Теоретичен корпус**, за да насочвате анализа.
-    * Преминавайте последователно през **Модулите**, за да тествате собствените си формулировки и изследователски въпроси срещу методологичните изисквания.
-    """)
 
 # --- МОДУЛ 1: РЕФЛЕКСИВНА СОЦИОЛОГИЯ ---
 with tab1:
@@ -137,12 +129,15 @@ with tab1:
                    - Извади на преден план скритите социологически понятия, базирани и на качените материали.
                    - Разбий въпроса на система от конкретни аналитични подвъпроси за емпирично изследване.
                 """
-                model_1 = genai.GenerativeModel(selected_model, system_instruction=system_prompt_1)
-                response_1 = model_1.generate_content(
-                    user_topic_1, 
-                    generation_config={"temperature": 0.0}
-                )
-                st.markdown(response_1.text)
+                try:
+                    model_1 = genai.GenerativeModel(selected_model, system_instruction=system_prompt_1)
+                    response_1 = model_1.generate_content(
+                        user_topic_1, 
+                        generation_config={"temperature": 0.0}
+                    )
+                    st.markdown(response_1.text)
+                except Exception as e:
+                    st.error(f"⚠️ Избраният модел ({selected_model}) не успя да обработи заявката. Възможно е да е експериментален или да не поддържа системни инструкции. Моля, избери 'gemini-1.5-pro' или 'gemini-1.5-flash' от менюто вляво.\n\n*(Технически детайли: {e})*")
 
 # --- МОДУЛ 2: РЕЛАЦИОННА СОЦИОЛОГИЯ ---
 with tab2:
@@ -172,12 +167,15 @@ with tab2:
                 2. 🌐 2. КОРПУС ОТ ПОЗИЦИИ И ГЕНЕРАЛНА СЪВКУПНОСТ: Покажи защо съвкупността не е статистическа сума от индивиди, а структуриран корпус от позиции в социалното пространство (структурни хомологии).
                 3. 📊 3. ЕДИНИЦИ НА ИЗВАДКА СРЕЩУ ЕДИНИЦИ НА АНАЛИЗ: Направи строго разграничение между единиците на извадка (практическите инструменти за достъп) и единиците на анализ (структурните позиции и отношения).
                 """
-                model_module_2 = genai.GenerativeModel(selected_model, system_instruction=system_prompt_module_2)
-                response_module_2 = model_module_2.generate_content(
-                    user_topic_2, 
-                    generation_config={"temperature": 0.0}
-                )
-                st.markdown(response_module_2.text)
+                try:
+                    model_module_2 = genai.GenerativeModel(selected_model, system_instruction=system_prompt_module_2)
+                    response_module_2 = model_module_2.generate_content(
+                        user_topic_2, 
+                        generation_config={"temperature": 0.0}
+                    )
+                    st.markdown(response_module_2.text)
+                except Exception as e:
+                    st.error(f"⚠️ Избраният модел ({selected_model}) не успя да обработи заявката. Моля, избери 'gemini-1.5-pro' или 'gemini-1.5-flash'.\n\n*(Технически детайли: {e})*")
 
 # --- МОДУЛ 3 ---
 with tab3:
