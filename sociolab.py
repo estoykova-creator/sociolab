@@ -3,8 +3,8 @@ import google.generativeai as genai
 import pypdf
 
 # 1. КОНФИГУРАЦИЯ НА ПРИЛОЖЕНИЕТО
-st.set_page_config(page_title="SocioLab: Релационна социология на Бурдийо", layout="wide")
-st.title("SocioLab: Цифров учебник и методологичен тренажор")
+st.set_page_config(page_title="Социологически тренажор", layout="wide")
+st.title("Социологически тренажор")
 st.subheader("Епистемологичен корпус в традицията на Пиер Бурдийо")
 
 # 2. СВЪРЗВАНЕ С ИЗКУСТВЕНИЯ ИНТЕЛЕКТ
@@ -83,7 +83,7 @@ global_topic = st.text_area(
 
 st.markdown("---")
 
-# 4. СТРУКТУРА НА УЧЕБНИКА (НОВАТА ЕПИСТЕМОЛОГИЧНА ЛОГИКА)
+# 4. СТРУКТУРА НА ТРЕНАЖОРА
 tab0, tab1, tab2, tab3, tab4 = st.tabs([
     "📖 Въведение",
     "1️⃣ Епистемологичен праг", 
@@ -93,7 +93,7 @@ tab0, tab1, tab2, tab3, tab4 = st.tabs([
 ])
 
 with tab0:
-    st.header("Добре дошли в интерактивния учебник по релационна социология")
+    st.header("Добре дошли в Социологическия тренажор")
     st.write("""
     Този инструмент е изграден върху фундаменталните принципи на пиер-бурдийовата социология. 
     Изследването не тръгва от субективните намерения на индивидите, а от **радикалния епистемологичен разрив с илюзията за прозрачност**.
@@ -138,6 +138,13 @@ with tab1:
                     m = genai.GenerativeModel(selected_model, system_instruction=prompt_1)
                     res = m.generate_content(global_topic, generation_config={"temperature": 0.0})
                     st.markdown(res.text)
+                    
+                    st.download_button(
+                        label="📥 Изтегли анализа от Етап 1 като файл",
+                        data=res.text,
+                        file_name="etap_1_epistemologichen_prag.txt",
+                        mime="text/plain"
+                    )
                 except Exception as e:
                     handle_google_errors(e, selected_model)
         else:
@@ -146,7 +153,7 @@ with tab1:
 # --- ЕТАП 2: СОЦИАЛНО ПРОСТРАНСТВО ---
 with tab2:
     st.header("Етап 2: Социално пространство и обективни отношения")
-    st.write("Преодоляване на опозицията индивид-общество чрез двойното съществувание на социалното.")
+    st.write("Преодоляване на опозицията индивид-общество чрез двойното съществуване на социалното.")
     
     if st.button("🚀 Конструирай социалното пространство (Етап 2)"):
         if global_topic.strip():
@@ -168,6 +175,13 @@ with tab2:
                     m = genai.GenerativeModel(selected_model, system_instruction=prompt_2)
                     res = m.generate_content(global_topic, generation_config={"temperature": 0.0})
                     st.markdown(res.text)
+                    
+                    st.download_button(
+                        label="📥 Изтегли анализа от Етап 2 като файл",
+                        data=res.text,
+                        file_name="etap_2_sotsialno_prostranstvo.txt",
+                        mime="text/plain"
+                    )
                 except Exception as e:
                     handle_google_errors(e, selected_model)
         else:
@@ -198,6 +212,13 @@ with tab3:
                     m = genai.GenerativeModel(selected_model, system_instruction=prompt_3)
                     res = m.generate_content(global_topic, generation_config={"temperature": 0.0})
                     st.markdown(res.text)
+                    
+                    st.download_button(
+                        label="📥 Изтегли анализа от Етап 3 като файл",
+                        data=res.text,
+                        file_name="etap_3_simvolno_proizvodstvo.txt",
+                        mime="text/plain"
+                    )
                 except Exception as e:
                     handle_google_errors(e, selected_model)
         else:
@@ -228,6 +249,13 @@ with tab4:
                     m = genai.GenerativeModel(selected_model, system_instruction=prompt_4)
                     res = m.generate_content(global_topic, generation_config={"temperature": 0.0})
                     st.markdown(res.text)
+                    
+                    st.download_button(
+                        label="📥 Изтегли анализа от Етап 4 като файл",
+                        data=res.text,
+                        file_name="etap_4_proizvodni_strukturi.txt",
+                        mime="text/plain"
+                    )
                 except Exception as e:
                     handle_google_errors(e, selected_model)
         else:
