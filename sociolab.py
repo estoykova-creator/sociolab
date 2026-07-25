@@ -7,6 +7,18 @@ st.set_page_config(page_title="SocioLab: Цифров учебник по ЕСИ
 st.title("SocioLab: Цифров учебник и методологичен тренажор")
 st.subheader("Елементи на социологическото изследване (в традицията на Пиер Бурдийо)")
 
+# --- СИНХРОНИЗАЦИЯ НА ТЕМАТА МЕЖДУ МОДУЛИТЕ ---
+# Създаваме "обща памет", която да свързва всички текстови полета
+if "shared_topic" not in st.session_state:
+    st.session_state.shared_topic = ""
+
+def sync_mod1():
+    st.session_state.shared_topic = st.session_state.input_mod1
+
+def sync_mod2():
+    st.session_state.shared_topic = st.session_state.input_mod2
+# ----------------------------------------------
+
 # 2. СВЪРЗВАНЕ С ИЗКУСТВЕНИЯ ИНТЕЛЕКТ
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
@@ -102,7 +114,15 @@ def handle_google_errors(e, model_name):
 # --- МОДУЛ 1: РЕФЛЕКСИВНА СОЦИОЛОГИЯ ---
 with tab1:
     st.header("Модул 1: Рефлексивна социология (Епистемологичен скъс)")
-    user_topic_1 = st.text_area("Опиши социологическия си проблем/тема:", placeholder="Например: Влиянието на социалните мрежи върху политическата активност...", key="topic_mod1")
+    
+    # Тук вързваме полето към общата памет
+    user_topic_1 = st.text_area(
+        "Опиши социологическия си проблем/тема:", 
+        value=st.session_state.shared_topic,
+        placeholder="Например: Влиянието на социалните мрежи върху политическата активност...", 
+        key="input_mod1",
+        on_change=sync_mod1
+    )
     
     if st.button("Тествай Модул 1"):
         if user_topic_1:
@@ -132,10 +152,13 @@ with tab1:
 with tab2:
     st.header("Модул 2: Релационна социология")
     
-    # Автоматично извличане на темата от Модул 1 (ако има такава)
-    default_topic_2 = st.session_state.get("topic_mod1", "")
-    
-    user_topic_2 = st.text_area("Въведи темата за релационно конструиране:", value=default_topic_2, key="topic_mod2")
+    # Тук също вързваме полето към същата обща памет
+    user_topic_2 = st.text_area(
+        "Въведи темата за релационно конструиране:", 
+        value=st.session_state.shared_topic,
+        key="input_mod2",
+        on_change=sync_mod2
+    )
     
     if st.button("Тествай Модул 2"):
         if user_topic_2:
